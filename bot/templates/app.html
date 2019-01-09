@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% block title %}DIU Bot{% endblock %}
+{% block content %}
+
+
+<div class="jumbotron" style="margin:0px; padding:15px;">
+  <a href="https://www.daffodilvarsity.edu.bd/" target="_blank"><img src="{% static 'img/daffodil-logo.png' %}" height="70px" width="80px"></a>
+  <h1 class="jumbotron-heading text-xs-center" style="font-size:30px; margin:0px;">DIU Bot</h1>
+</div>
+<hr style="width:50%; margin:0 auto;">
+
+<div class="row">
+  <div class="col-md-12" style="padding:10px 50px;">
+    <div class="panel panel-primary bot-panel">
+      <div class="panel-heading">
+        <span class="glyphicon glyphicon-comment"></span> Chat
+      </div>
+      <div class="panel-body bot" id="all_messages">
+        <ul class="list-group chat-log js-chat-log">
+        </ul>
+
+        <div class="input-group input-group-lg mt-1">
+          <input type="text" class="form-control js-text" placeholder="Lets Talk..." />
+          <span class="input-group-btn">
+            <button class="btn btn-success js-say">Submit</button>
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+      var $chatlog = $('.js-chat-log');
+      var $input = $('.js-text');
+      var $sayButton = $('.js-say');
+      var dialogflowUrl = '{% url "index" %}';
+      var csrftoken = Cookies.get('csrftoken');
+
+      function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+      }
+
+      $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+        }
+      });
+
+      function createRow(text) {
+        var $row = $('<li class="list-group-item"></li>');
+        var list = '<li class="list-group-item">'
+        var k = text.split("\n")
+
+        for(i=0;i<k.length;i++) {
+            list += k[i]+"<br />"
+        }
+
+        list = list + "</li>"
+        $row.text(list);
+        $chatlog.append(list);
+        $chatlog[0].scrollTop = $chatlog[0].scrollHeight;
+      }
+
+      
+
+      function submitInput() {
+        var inputData = {
+          'text': $input.val()
+        }
+        // Display the user's input on the web page
+        createRow(inputData.text);
+        var dialogflowChatUrl = '{% url "chatbot" %}';
+        var $submit = $.ajax({
+          type: 'POST',
+          url: dialogflowChatUrl,
+          data: JSON.stringify(inputData),
+          contentType: 'application/json'
+        });
+
+        $submit.done(function(statement) {
+            createRow(statement.text);
+            // Clear the input field
+            $input.val('');
+        });
+
+        $submit.fail(function() {
+          // TODO: Handle errors
+        });
+      }
+
+      $sayButton.click(function() {
+        submitInput();
+      });
+
+      $input.keydown(function(event) {
+        // Submit the input when the enter button is pressed
+        if (event.keyCode == 13) {
+          submitInput();
+        }
+      });
+    </script>
+{% endblock %}

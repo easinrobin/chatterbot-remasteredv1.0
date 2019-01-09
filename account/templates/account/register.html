@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% block title %}Create an account{% endblock %}
+{% block content %}
+    <div class="signup-bg">
+        <a href="https://www.daffodilvarsity.edu.bd/" target="_blank"><img src="{% static 'img/daffodil-logo.png' %}" height="100px" width="100px" style="margin: 15px;">
+        </a>
+        <h1>Sign Up</h1>
+        <p>Create an Account</p>
+    </div>
+
+    <form action="." method="post" class="form">
+        {% csrf_token %}
+        {% bootstrap_form user_form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-success"><i class="fa fa-user-plus"></i>
+                Create my account
+            </button>
+        {% endbuttons %}
+    </form>
+{% endblock %}

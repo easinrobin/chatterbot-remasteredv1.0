@@ -1,0 +1,12 @@
+python v3.5.2
+Django==2.1
+django-bootstrap3==9.1.0
+channels==2.0.2
+channels_redis==2.1.1
+pypiwin32
+Redis server for windows {download from: https://github.com/MicrosoftArchive/redis/releases}
+chatterbot==0.8.7
+
+---------------------------
+
+Activate virtual environment: "path to/Scripts/activate.bat"

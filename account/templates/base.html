@@ -1,0 +1,52 @@
+{% load staticfiles %}
+{% load bootstrap3 %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="{% static "stylesheets/login.css" %}" rel="stylesheet">
+    <link href="{% static "stylesheets/chat.css" %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+    <script src="{% static "js/jquery.min.js" %}"></script>
+    <script src="{% static "js/js.cookie.js" %}"></script>
+    {% bootstrap_css %}
+    <link href="{% static "stylesheets/main.css" %}" rel="stylesheet">
+    <link href="{% static "stylesheets/custom.css" %}" rel="stylesheet">
+    {% bootstrap_javascript %}
+
+</head>
+<body>
+
+<nav class="navbar navbar-default custom-nav" >
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{% url "chat" %}">DIU Courses Chat Room</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url "index" %}"><span class="fa fa-robot"></span> Chatterbot</a></li>
+            {% if request.user.is_authenticated %}
+                <li><a href="#"><span class="glyphicon glyphicon-user"></span> Hello {{ request.user }}</a>
+                </li>
+                <li><a href="{% url "logged_out" %}"><span class="fa fa-sign-out-alt"></span> Logout</a></li>
+            {% else %}
+                <li><a href="{% url "login" %}"><span class="fa fa-sign-in-alt"></span> Login</a></li>
+                <li><a href="{% url "register" %}"><span class="fa fa-user-plus"></span> Sign up</a></li>
+                
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+
+<div class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+
+{% block js %}
+{% endblock %}
+
+
+</html>
